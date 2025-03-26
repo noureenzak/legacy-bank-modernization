@@ -1,1 +1,8 @@
-/bin/
+# IDE
+.classpath
+.project
+.settings/
+bin/
+
+# System
+.DS_Store
