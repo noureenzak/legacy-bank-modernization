@@ -2,104 +2,107 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-/**
- * GUI for bank transaction system with thread-safe updates
- */
 public class BankTransactionSystemGUI {
+    private static final String TITLE = "Bank Transaction System";
+    private static final String DEPOSIT_LABEL = "Deposit Amount:";
+    private static final String WITHDRAW_LABEL = "Withdraw Amount:";
+    private static final String BALANCE_LABEL = "Current Balance:";
+    private static final String DEPOSIT_BUTTON = "Deposit";
+    private static final String WITHDRAW_BUTTON = "Withdraw";
+    private static final String TRANSACTION_HISTORY_HEADER = "Transaction History:\n";
+    private static final String ERROR_TITLE = "Error";
+    private static final String INVALID_NUMBER_MESSAGE = "Please enter a valid number";
+
     private static BankAccount account = new BankAccount(1000);
     private static JTextArea transactionLog;
 
     public static void main(String[] args) {
-        // Create main frame
-        JFrame frame = new JFrame("Bank Transaction System");
-        frame.setSize(600, 400); // Increased size for transaction log
+        SwingUtilities.invokeLater(() -> createAndShowGUI());
+    }
+
+    private static void createAndShowGUI() {
+        JFrame frame = new JFrame(TITLE);
+        frame.setSize(700, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
 
-        // Main panel with border layout
-        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Transaction panel (left)
-        JPanel transactionPanel = new JPanel(new GridLayout(4, 2, 5, 5));
-        
-        // Transaction components
+        // Fields and buttons
         JTextField depositField = new JTextField(10);
         JTextField withdrawField = new JTextField(10);
-        JLabel balanceLabel = new JLabel("Balance: " + account.getBalance());
-        JButton depositButton = new JButton("Deposit");
-        JButton withdrawButton = new JButton("Withdraw");
+        JLabel balanceLabel = new JLabel(BALANCE_LABEL + " " + account.getBalance());
+        JButton depositButton = new JButton(DEPOSIT_BUTTON);
+        JButton withdrawButton = new JButton(WITHDRAW_BUTTON);
 
-        // Add components to transaction panel
-        transactionPanel.add(new JLabel("Deposit Amount:"));
-        transactionPanel.add(depositField);
-        transactionPanel.add(depositButton);
-        transactionPanel.add(new JLabel("Withdraw Amount:"));
-        transactionPanel.add(withdrawField);
-        transactionPanel.add(withdrawButton);
-        transactionPanel.add(new JLabel("Current Balance:"));
-        transactionPanel.add(balanceLabel);
+        // Deposit Row
+        gbc.gridx = 0; gbc.gridy = 0;
+        panel.add(new JLabel(DEPOSIT_LABEL), gbc);
+        gbc.gridx = 1;
+        panel.add(depositField, gbc);
+        gbc.gridx = 2;
+        panel.add(depositButton, gbc);
 
-        // Transaction log (right)
-        transactionLog = new JTextArea();
+        // Withdraw Row
+        gbc.gridx = 0; gbc.gridy = 1;
+        panel.add(new JLabel(WITHDRAW_LABEL), gbc);
+        gbc.gridx = 1;
+        panel.add(withdrawField, gbc);
+        gbc.gridx = 2;
+        panel.add(withdrawButton, gbc);
+
+        // Balance Row
+        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridwidth = 3;
+        panel.add(balanceLabel, gbc);
+
+        // Transaction Log Area
+        transactionLog = new JTextArea(10, 30);
         transactionLog.setEditable(false);
-        transactionLog.setText("Transaction History:\n");
+        transactionLog.setText(TRANSACTION_HISTORY_HEADER);
         JScrollPane scrollPane = new JScrollPane(transactionLog);
 
-        // Add panels to main frame
-        mainPanel.add(transactionPanel, BorderLayout.WEST);
-        mainPanel.add(scrollPane, BorderLayout.CENTER);
-        frame.add(mainPanel);
+        gbc.gridx = 0; gbc.gridy = 3;
+        gbc.gridwidth = 3;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        panel.add(scrollPane, gbc);
 
-        // Deposit action with error handling
-        depositButton.addActionListener(e -> {
-            try {
-                double amount = Double.parseDouble(depositField.getText());
-                new Thread(() -> {
-                    try {
-                        account.deposit(amount);
-                        // Update UI on Swing thread
-                        SwingUtilities.invokeLater(() -> {
-                            balanceLabel.setText(String.format("Balance: %.2f", account.getBalance()));
-                            transactionLog.append(account.getLastTransaction() + "\n");
-                        });
-                    } catch (IllegalArgumentException ex) {
-                        SwingUtilities.invokeLater(() -> 
-                            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE));
-                    }
-                }).start();
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(frame, "Please enter a valid number", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        // Action Listeners
+        depositButton.addActionListener(e -> handleTransaction(depositField, true, balanceLabel));
+        withdrawButton.addActionListener(e -> handleTransaction(withdrawField, false, balanceLabel));
 
-        // Withdraw action with error handling
-        withdrawButton.addActionListener(e -> {
-            try {
-                double amount = Double.parseDouble(withdrawField.getText());
-                new Thread(() -> {
-                    try {
-                        account.withdraw(amount);
-                        SwingUtilities.invokeLater(() -> {
-                            balanceLabel.setText(String.format("Balance: %.2f", account.getBalance()));
-                            transactionLog.append(account.getLastTransaction() + "\n");
-                        });
-                    } catch (IllegalArgumentException | IllegalStateException ex) {
-                        SwingUtilities.invokeLater(() -> 
-                            JOptionPane.showMessageDialog(frame, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE));
-                    }
-                }).start();
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(frame, "Please enter a valid number", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
+        frame.add(panel, BorderLayout.CENTER);
         frame.setVisible(true);
     }
 
-    /**
-     * Helper method to update transaction log
-     */
-    private static void updateTransactionLog(String message) {
-        transactionLog.append(message + "\n");
+    private static void handleTransaction(JTextField field, boolean isDeposit, JLabel balanceLabel) {
+        try {
+            double amount = Double.parseDouble(field.getText());
+            new Thread(() -> {
+                try {
+                    if (isDeposit) {
+                        account.deposit(amount);
+                    } else {
+                        account.withdraw(amount);
+                    }
+                    SwingUtilities.invokeLater(() -> {
+                        balanceLabel.setText(BALANCE_LABEL + " " + String.format("%.2f", account.getBalance()));
+                        transactionLog.append(account.getLastTransaction() + "\n");
+                        field.setText("");
+                    });
+                } catch (IllegalArgumentException | IllegalStateException ex) {
+                    SwingUtilities.invokeLater(() ->
+                        JOptionPane.showMessageDialog(null, ex.getMessage(), ERROR_TITLE, JOptionPane.ERROR_MESSAGE));
+                }
+            }).start();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, INVALID_NUMBER_MESSAGE, ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
