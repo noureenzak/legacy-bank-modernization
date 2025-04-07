@@ -7,7 +7,7 @@ public class GUIControllerTest {
     private JLabel balanceLabel;
 
     @BeforeEach
-    void setup() {
+    void setup() throws Exception{
         dummyField = new JTextField();
         balanceLabel = new JLabel();
         resetAccount(); 
@@ -34,6 +34,7 @@ public class GUIControllerTest {
 
     @Test
     void testValidDeposit() throws Exception {
+        BankTransactionSystemGUI.main(null);
         invokeHandleTransaction("50", true);
         Field accountField = BankTransactionSystemGUI.class.getDeclaredField("account");
         accountField.setAccessible(true);
