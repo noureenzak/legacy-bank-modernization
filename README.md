@@ -5,7 +5,7 @@ A collaborative project to modernize a legacy Java banking system using MVC prin
 ## 👥 Team Members
 - @noureenzak: Core Banking Logic (model)
 - @majdallababidi1: GUI Modernization (view)
-- @salman: Automated Testing & CI/CD
+- @almoawdah501: Automated Testing & CI/CD
 
 ## ✅ Key Features
 - Thread-safe `BankAccount` class with `ReentrantLock`
