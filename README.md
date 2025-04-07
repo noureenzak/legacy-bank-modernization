@@ -33,4 +33,4 @@ A collaborative project to modernize a legacy Java banking system using MVC prin
 - Git & GitHub
 
 ## 📄 License
-MIT License (or your preferred one)
+MIT 
