@@ -1,26 +1,36 @@
-# 🏦 Legacy Bank System Modernization  
-*Software Evolution Assignment | CRN 54126*  
+# Legacy Bank Modernization 🏦
 
-## 🚀 Project Overview  
-Modernization of a Java-based banking system with:  
-- Thread-safe transaction processing  
-- MVC architecture  
-- Automated testing (JUnit + CI)  
+A collaborative project to modernize a legacy Java banking system using MVC principles, multithreading, and JUnit testing.
 
-## 📂 Repository Structure  
-src/
-├── BankAccount.java # Core banking logic
-└── BankTransactionSystemGUI.java # User interface
+## 👥 Team Members
+- @noureenzak: Core Banking Logic (model)
+- @majdallababidi1: GUI Modernization (view)
+- @salman: Automated Testing & CI/CD
 
-## 👥 Team Members  
-- [Your Name] (@your-github)  
-- [Member 2] (@github2)  
-- [Member 3] (@github3)  
+## ✅ Key Features
+- Thread-safe `BankAccount` class with `ReentrantLock`
+- Full transaction history logging
+- Modernized Swing GUI with input validation
+- Concurrency-safe operations (tested)
+- JUnit 5 tests for core features and edge cases
+- Mocked GUI controller tests using reflection
 
-## 🔧 Setup Instructions  
-1. **Requirements**: JDK 17+, Maven  
-2. **Run**:  
-   ```bash
-   cd src
-   javac BankAccount.java BankTransactionSystemGUI.java
-   java BankTransactionSystemGUI
+## 🧪 How to Run Tests
+1. Open the project in IntelliJ IDEA
+2. Right-click `BankAccountTest`, `BankAccountConcurrencyTest`, or `GUIControllerTest`
+3. Select **Run '...Test'**
+
+## 🖥️ How to Launch the GUI
+1. Right-click `BankTransactionSystemGUI.java`
+2. Click **Run 'BankTransactionSystemGUI.main()'**
+3. Interact with the GUI to deposit/withdraw and view transaction history
+
+
+## 🔧 Tools Used
+- Java 17
+- IntelliJ IDEA
+- JUnit 5
+- Git & GitHub
+
+## 📄 License
+MIT License (or your preferred one)
