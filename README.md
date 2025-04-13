@@ -3,9 +3,9 @@
 A collaborative project to modernize a legacy Java banking system using MVC principles, multithreading, and JUnit testing.
 
 ## 👥 Team Members
-- @noureenzak: Core Banking Logic (model)
-- @majdallababidi1: GUI Modernization (view)
-- @almoawdah501: Automated Testing & CI/CD
+- @noureenzak
+- @majdallababidi1
+- @almoawdah501
 
 ## ✅ Key Features
 - Thread-safe `BankAccount` class with `ReentrantLock`
